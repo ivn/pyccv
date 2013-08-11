@@ -599,9 +599,17 @@ ccv_enable_cache.argtypes = [size_t]
 # values for unnamed enumeration
 
 # values for unnamed enumeration
-#ccv_read = _libraries['libccv'].ccv_read
-#ccv_read.restype = c_int
-#ccv_read.argtypes = [STRING, POINTER(POINTER(ccv_dense_matrix_t)), c_int]
+
+# ccv_read from ccv.h is a syntax-sugar macro which allows us to call
+# ccv_read(in, x, type) or ccv_read(in, x, type, rows, cols, scanline)
+# and expands to ccv_read_impl.
+# I can't call macro, but I can link ccv_read directly to ccv_read_impl 
+# which can be called only the second way.
+# ccv_read(in, x, type) is really ccv_read_impl(int, x, type, 0, 0, 0)
+ccv_read = _libraries['libccv'].ccv_read_impl
+ccv_read.restype = c_int
+ccv_read.argtypes = [STRING, POINTER(POINTER(ccv_dense_matrix_t)), c_int, c_int, c_int, c_int]
+
 ccv_write = _libraries['libccv'].ccv_write
 ccv_write.restype = c_int
 ccv_write.argtypes = [POINTER(ccv_dense_matrix_t), STRING, POINTER(c_int), c_int, c_void_p]
