@@ -743,6 +743,14 @@ ccv_array_free_immediately.argtypes = [POINTER(ccv_array_t)]
 ccv_array_free = _libraries['libccv'].ccv_array_free
 ccv_array_free.restype = None
 ccv_array_free.argtypes = [POINTER(ccv_array_t)]
+
+# ccv_array_get is a macro, so no function to point
+def ccv_array_get(array, i):
+    assert(isinstance(array, POINTER(ccv_array_t)))
+    assert(isinstance(i, int))
+    return array.contents.data + array.contents.rsize * i
+
+
 class ccv_point_t(Structure):
     pass
 ccv_point_t._fields_ = [
